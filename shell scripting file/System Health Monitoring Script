@@ -1,0 +1,36 @@
+#!/bin/bash
+
+{
+echo "cpu usage:"
+cpu_usage=$(top -bn1 | grep "Cpu(s)" | awk '{print 100 - $8 }')
+echo "${cpu_usage}%"
+
+echo "memory usage:"
+memory_usage=$(free | grep Mem | awk '{print $3 "/" $2}')
+echo "${memory_usage}"
+
+echo "disk usage"
+disk_usage=$(df  -h --total | grep total | awk '{print $5}'| tr -d '%')
+echo "${disk_usage}%"
+
+echo "Running process"
+ps -e
+
+echo "------------------------------------------------------------"
+echo "---------------------ALERT----------------------------------"
+echo "------------------------------------------------------------"
+
+if (( ${cpu_usage%.*} > 80 )); then
+  alert "High CPU usage: ${cpu_usage}% on $(date '+%Y-%m-%d %H:%M:%S')"
+fi
+
+if (( ${memory_usage%.*} > 80 )); then
+  alert "High memory usage: ${memory_usage}% on $(date '+%Y-%m-%d %H:%M:%S')"
+fi
+
+if (( ${disk_usage%.*} > 80 )); then
+  alert "High disk usage : ${disk_usage}% on $(date '+%Y-%m-%d %H:%M:%S')"
+fi
+
+echo "completed"
+}>system-log.txt

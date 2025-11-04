@@ -1,0 +1,25 @@
+apiVersion: security.kubearmor.com/v1
+kind: KubeArmorPolicy
+metadata:
+  name: only-allow-wisecow-exec
+spec:
+  selector:
+    matchLabels:
+      app: wisecow-app
+  process:
+    matchPaths:
+      - path: /bin/bash
+      - path: /bin/nc
+      - path: /usr/games/cowsay
+      - path: /usr/games/fortune
+      - path: /app/wisecow.sh
+    action: Allow
+  file:
+    matchDirectories:
+      - dir: /app/
+        recursive: true
+    action: Allow
+  network:
+    matchProtocols:
+      - protocol: tcp
+    action: Allow

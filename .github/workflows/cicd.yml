@@ -42,6 +42,6 @@ jobs:
 
     - name: Deploy to Kubernetes
       run: |
-        kubectl set image deployment/wisecow-deployment wisecow-container=${{ secrets.DOCKERHUB_USERNAME }}/wisecow:latest
+        kubectl set image deployment/wisecow-deployment wisecow=${{ secrets.DOCKERHUB_USERNAME }}/wisecow:latest
         kubectl rollout status deployment/wisecow-deployment
 
